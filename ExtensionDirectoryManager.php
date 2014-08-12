@@ -53,11 +53,6 @@ class ExtensionDirectoryManager {
       }
   }
 
-  public function __destruct()
-  {
-    $this->createIni();
-  }
-
   public function initializeExtDir()
   {
     $this->filesystem->ensureDirectoryExists($this->extDir);
@@ -66,15 +61,15 @@ class ExtensionDirectoryManager {
 
   private function createIni()
   {
-    $ordering = TopologicalSort::sort(get_object_vars($this->dependencies));
+    $ordering = TopologicalSort::sort(get_object_vars($this->json->dependencies));
     $content = '';
     foreach ($ordering as $packageName) {
-      if (isset($this->extFiles->{$packageName})) {
-        foreach ($this->extFiles->{$packageName} as $$file) {
+      if (isset($this->json->extFiles->{$packageName})) {
+        foreach ($this->json->extFiles->{$packageName} as $file) {
           if(defined('HHVM_VERSION')) {
-            $content .= 'extension[] = '.$this->extDir.'/'.$file.'\n';
+            $content .= 'hhvm.extensions[] = '.$this->extDir.'/'.$file."\n";
           } else {
-            $content .= 'extension = '.$this->extDir.'/'.$file.'\n';
+            $content .= 'extension = '.$this->extDir.'/'.$file."\n";
           }
         }
       }
@@ -88,7 +83,7 @@ class ExtensionDirectoryManager {
     foreach ($package->getRequires() as $depPackage) {
       $packages[] = $depPackage->getTarget();
     }
-    $this->dependencies->{$package->getName()} = $packages;
+    $this->json->dependencies->{$package->getName()} = $packages;
   }
 
   public function addExtension(PackageInterface $package, $debPackages, $installPath)
@@ -116,6 +111,7 @@ class ExtensionDirectoryManager {
 
     $this->json->extFiles->{$package->getName()} = $extensions;
     $this->addDependencies($package);
+    $this->createIni();
 
     return $this->updatePackageList($package, $debPackages);
   }
@@ -123,8 +119,9 @@ class ExtensionDirectoryManager {
   public function removeExtension(PackageInterface $package)
   {
     $this->removeFiles($package);
+    unset($this->json->dependencies->{$package->getName()});
+    $this->createIni();
     return $this->updatePackageList($package);
-    unset($this->dependencies->{$package->getName()});
   }
 
   protected function removeFiles(PackageInterface $package)

@@ -1,5 +1,6 @@
 <?php
 
+
 /*
  *  Copyright (c) 2014, Facebook, Inc.
  *  All rights reserved.
@@ -19,6 +20,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+namespace hhvm;
+
 
 class TopologicalSort {
 
@@ -41,6 +45,11 @@ class TopologicalSort {
 
   private static function visit(&$ordering, &$tempMarked, $nodes, $curNode)
   {
+    // if $curNode is not in $nodes then it is not a package we care about.
+    if (!isset($nodes[$curNode])) {
+      $tempMarked[$curNode] = false;
+      return;
+    }
     if (isset($tempMarked[$curNode]) && $tempMarked[$curNode]) {
       throw new \UnexpectedValueException('Cycle in the dependencies of the project');
     }
