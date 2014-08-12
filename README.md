@@ -9,7 +9,7 @@ Installation / Usage (for HHVM)
 
 1. Install the `hhvm-nightly` and `hhvm-dev-nightly` packages (some important features and bug fixes are not in the current release). You will also need [`Composer`](https://getcomposer.org/) itself. Composer can be installed from the [`composer.phar`](https://getcomposer.org/composer.phar) executable or the installer. 
 
-``` sh
+    ``` sh
     $ curl -sS https://getcomposer.org/installer | hhvm
     ```
 
