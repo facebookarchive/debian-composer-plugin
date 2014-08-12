@@ -1,13 +1,13 @@
 {
-    "name": "kmiller68/debian-installer",
+    "name": "hhvm/debian-composer-plugin",
     "type": "composer-plugin",
     "description": "A simple extension installer for php/hhvm programs primarily for testing purposes",
     "license": "proprietary",
     "autoload": {
-        "psr-4": {"kmiller68\\": ""}
+        "psr-4": {"hhvm\\": ""}
     },
     "extra": {
-        "class": "kmiller68\\DebianInstallerPlugin"
+        "class": "hhvm\\DebianInstallerPlugin"
     },
     "require": {
         "composer-plugin-api": "1.0.0"
