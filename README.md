@@ -7,7 +7,7 @@ A simple tool for installing language extensions with composer for HHVM and PHP 
 Installation / Usage (for HHVM)
 ============================
 
-1. Install the `hhvm-nightly` and `hhvm-dev-nightly` packages (some important features and bug fixes are not in the current release). You will also need [`Composer`](https://getcomposer.org/) itself. Composer can be installed from the [`composer.phar`](https://getcomposer.org/composer.phar) executable or the installer. 
+1. [Install the `hhvm-nightly` and `hhvm-dev-nightly` packages](https://github.com/facebook/hhvm/wiki/Prebuilt%20Packages%20for%20HHVM) (some important features and bug fixes are not in the current release). You will also need [`Composer`](https://getcomposer.org/) itself. Composer can be installed from the [`composer.phar`](https://getcomposer.org/composer.phar) executable or the installer. 
 
     ``` sh
     $ curl -sS https://getcomposer.org/installer | hhvm
