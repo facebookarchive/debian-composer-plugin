@@ -83,20 +83,23 @@ class DebianInstaller extends Installer\LibraryInstaller
     if (empty($extras['apt-get'])) {
       throw new \UnexpectedValueException('Error while installing '
         .$package->getPrettyName()
-        .' debian-extension packages should have apt-get defined in their extra key to be installed');
+        .' debian-extension packages should have apt-get defined in their extra'
+        .' key to be installed');
     }
 
     if (empty($extras['apt-get'][$this->distro])) {
       throw new \UnexpectedValueException('Error while installing '
         .$package->getPrettyName()
-        .' debian-extension packages should have the distribution defined in their extra key to be installed');
+        .' debian-extension packages should have the distribution defined'
+        .' in their extra key to be installed');
     }
 
     if (empty($extras['apt-get'][$this->distro][$this->release])) {
       if (empty($extras['apt-get'][$this->distro]['default'])) {
         throw new \UnexpectedValueException('Error while installing '
           .$package->getPrettyName()
-          .' debian-extension packages should have the release or default defined in their extra key to be installed');
+          .' debian-extension packages should have the release or default'
+          .' defined in their extra key to be installed');
       }
       return $extras['apt-get'][$this->distro]['default'];
     }
@@ -110,7 +113,7 @@ class DebianInstaller extends Installer\LibraryInstaller
   public function install(InstalledRepositoryInterface $repo, PackageInterface $package)
   {
     parent::install($repo, $package);
-    $this->compileExtension($package);
+    $this->compileExtension($package, true);
   }
 
   private function formatNames($names)
@@ -129,7 +132,7 @@ class DebianInstaller extends Installer\LibraryInstaller
   {
     $this->cleanExtension($target);
     parent::update($repo, $initial, $target);
-    $this->compileExtension($target);
+    $this->compileExtension($target, false);
   }
 
   /**
@@ -192,19 +195,26 @@ class DebianInstaller extends Installer\LibraryInstaller
     }
   }
 
-  private function compileExtension(PackageInterface $package)
+  private function compileExtension(PackageInterface $package, $updateNeeded = true)
   {
       $this->extDirManager->initializeExtDir();
 
       $packages = $this->getDebianPackages($package);
       $names = $this->formatNames($packages);
       if (!$this->didUpdate) {
-        passthru('sudo apt-get update');
-        $this->didUpdate = true;
+        $question = "Would you like to run sudo apt-get update? [y]es/[N]o: ";
+        if ($updateNeeded && $this->io->askConfirmation($question, false)) {
+          passthru('sudo apt-get update');
+          $this->didUpdate = true;
+        }
       }
-      passthru("sudo apt-get install".$names);
+      $command = "sudo apt-get install".$names;
+      $this->io->write("Running: ".$command);
+      passthru($command);
 
-      $flags = (isset($this->extOptions) && isset($this->extOptions[$package->getName()])) ? $this->extOptions[$package->getName()] : '';
+      $flags = (isset($this->extOptions) && isset($this->extOptions[$package->getName()])) ?
+        $this->extOptions[$package->getName()] :
+        '';
       $path = $this->getInstallPath($package);
 
       if (defined('HHVM_VERSION')) {
