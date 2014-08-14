@@ -140,7 +140,6 @@ class ExtensionDirectoryManager {
    */
   protected function updatePackageList(PackageInterface $package, $debPackages = array())
   {
-    hphpd_break();
     $name = $package->getName();
     $allPackages = array_merge($debPackages, array_keys((array) $this->json->packages));
     $unneeded = array();

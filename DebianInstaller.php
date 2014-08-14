@@ -158,7 +158,6 @@ class DebianInstaller extends Installer\LibraryInstaller
   {
     if (count($unneeded) !== 0 && $this->io->isInteractive()) {
 
-      hphpd_break();
       $question = "The following extensions can be removed:".$this->formatNames($unneeded)
         ." would you like to remove them? [y]es/[N]o/[i]nteractive: ";
       $validator = function ($input) {
