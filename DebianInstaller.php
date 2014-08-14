@@ -88,10 +88,13 @@ class DebianInstaller extends Installer\LibraryInstaller
     }
 
     if (empty($extras['apt-get'][$this->distro])) {
-      throw new \UnexpectedValueException('Error while installing '
-        .$package->getPrettyName()
-        .' debian-extension packages should have the distribution defined'
-        .' in their extra key to be installed');
+      if (empty($extras['apt-get']['default'])) {
+        throw new \UnexpectedValueException('Error while installing '
+          .$package->getPrettyName()
+          .' debian-extension packages should have the distribution defined'
+          .' in their extra key to be installed');
+      }
+      return empty($extras['apt-get']['default']);
     }
 
     if (empty($extras['apt-get'][$this->distro][$this->release])) {
