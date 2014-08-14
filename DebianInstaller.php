@@ -87,27 +87,22 @@ class DebianInstaller extends Installer\LibraryInstaller
         .' key to be installed');
     }
 
-    if (empty($extras['apt-get'][$this->distro])) {
-      if (empty($extras['apt-get']['default'])) {
-        throw new \UnexpectedValueException('Error while installing '
-          .$package->getPrettyName()
-          .' debian-extension packages should have the distribution defined'
-          .' in their extra key to be installed');
-      }
-      return empty($extras['apt-get']['default']);
-    }
+    $json = $extras['apt-get'];
 
-    if (empty($extras['apt-get'][$this->distro][$this->release])) {
-      if (empty($extras['apt-get'][$this->distro]['default'])) {
-        throw new \UnexpectedValueException('Error while installing '
-          .$package->getPrettyName()
-          .' debian-extension packages should have the release or default'
-          .' defined in their extra key to be installed');
+    if (!empty($json[$this->distro])) {
+      if (!empty($json[$this->distro][$this->release])) {
+        return $json[$this->distro][$this->release];
+      } else if (!empty($json[$this->distro]['default'])) {
+        return $json[$this->distro]['default'];
       }
-      return $extras['apt-get'][$this->distro]['default'];
-    }
+    } else if (!empty($json['default'])) {
+      return $json['default'];
+    } else {
+      throw new \UnexpectedValueException('Error while installing '
+           .$package->getPrettyName()
+           .' debian-extension packages should have the distro/release or default'
+           .' defined in their extra key to be installed');
 
-    return $extras['apt-get'][$this->distro][$this->release];
   }
 
   /**
