@@ -205,8 +205,8 @@ class DebianInstaller extends Installer\LibraryInstaller
         $question = "Would you like to run sudo apt-get update? [y]es/[N]o: ";
         if ($updateNeeded && $this->io->askConfirmation($question, false)) {
           passthru('sudo apt-get update');
-          $this->didUpdate = true;
         }
+        $this->didUpdate = true;
       }
       $command = "sudo apt-get install".$names;
       $this->io->write("Running: ".$command);
