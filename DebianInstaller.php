@@ -99,7 +99,7 @@ class DebianInstaller extends Installer\LibraryInstaller
            .$package->getPrettyName()
            .' debian-extension packages should have the distro/release or default'
            .' defined in their extra key to be installed');
-
+    }
   }
 
   /**
