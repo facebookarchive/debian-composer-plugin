@@ -81,10 +81,7 @@ class DebianInstaller extends Installer\LibraryInstaller
   {
     $extras = $package->getExtra();
     if (empty($extras['apt-get'])) {
-      throw new \UnexpectedValueException('Error while installing '
-        .$package->getPrettyName()
-        .' debian-extension packages should have apt-get defined in their extra'
-        .' key to be installed');
+      return false;
     }
 
     $json = $extras['apt-get'];
@@ -197,17 +194,19 @@ class DebianInstaller extends Installer\LibraryInstaller
       $this->extDirManager->initializeExtDir();
 
       $packages = $this->getDebianPackages($package);
-      $names = $this->formatNames($packages);
-      if (!$this->didUpdate) {
-        $question = "Would you like to run sudo apt-get update? [y]es/[N]o: ";
-        if ($updateNeeded && $this->io->askConfirmation($question, false)) {
-          passthru('sudo apt-get update');
+      if ($packages !== false) {
+        $names = $this->formatNames($packages);
+        if (!$this->didUpdate) {
+          $question = "Would you like to run sudo apt-get update? [y]es/[N]o: ";
+          if ($updateNeeded && $this->io->askConfirmation($question, false)) {
+            passthru('sudo apt-get update');
+          }
+          $this->didUpdate = true;
         }
-        $this->didUpdate = true;
+        $command = "sudo apt-get install".$names;
+        $this->io->write("Running: ".$command);
+        passthru($command);
       }
-      $command = "sudo apt-get install".$names;
-      $this->io->write("Running: ".$command);
-      passthru($command);
 
       $flags = (isset($this->extOptions) && isset($this->extOptions[$package->getName()])) ?
         $this->extOptions[$package->getName()] :
