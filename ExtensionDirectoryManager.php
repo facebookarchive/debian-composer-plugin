@@ -161,24 +161,6 @@ class ExtensionDirectoryManager {
         }
       }
     }
-/*
-    $unneeded = array();
-    foreach ($debPackages as $debPackage) {
-      if (isset($this->json->packages->{$debPackage})) {
-
-      }
-    }
-    foreach ((array) $this->json->packages as $debianPackage => $extensions) {
-      $packageNeeded = in_array($debianPackage, $debPackages);
-      $isSet = in_array($package->getName(), $extensions);
-      if ($packageNeeded && !$isSet) {
-        $extensions[] = $package->getName();
-      } elseif (!$packageNeeded && $isSet) {
-        unset($extensions[$package->getName()]);
-        $unneeded[] = $debianPackage;
-      }
-    }
-*/
 
     file_put_contents($this->jsonFile, json_encode($this->json, JSON_PRETTY_PRINT));
 

@@ -81,7 +81,7 @@ class DebianInstaller extends Installer\LibraryInstaller
   {
     $extras = $package->getExtra();
     if (empty($extras['apt-get'])) {
-      return false;
+      array();
     }
 
     $json = $extras['apt-get'];
@@ -194,7 +194,7 @@ class DebianInstaller extends Installer\LibraryInstaller
       $this->extDirManager->initializeExtDir();
 
       $packages = $this->getDebianPackages($package);
-      if ($packages !== false) {
+      if (!empty($packages)) {
         $names = $this->formatNames($packages);
         if (!$this->didUpdate) {
           $question = "Would you like to run sudo apt-get update? [y]es/[N]o: ";
@@ -206,8 +206,6 @@ class DebianInstaller extends Installer\LibraryInstaller
         $command = "sudo apt-get install".$names;
         $this->io->write("Running: ".$command);
         passthru($command);
-      } else {
-        $packages = array();
       }
 
       $flags = (isset($this->extOptions) && isset($this->extOptions[$package->getName()])) ?
