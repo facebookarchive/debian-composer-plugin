@@ -81,7 +81,7 @@ class DebianInstaller extends Installer\LibraryInstaller
   {
     $extras = $package->getExtra();
     if (empty($extras['apt-get'])) {
-      array();
+      return array();
     }
 
     $json = $extras['apt-get'];
