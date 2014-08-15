@@ -206,6 +206,8 @@ class DebianInstaller extends Installer\LibraryInstaller
         $command = "sudo apt-get install".$names;
         $this->io->write("Running: ".$command);
         passthru($command);
+      } else {
+        $packages = array();
       }
 
       $flags = (isset($this->extOptions) && isset($this->extOptions[$package->getName()])) ?
